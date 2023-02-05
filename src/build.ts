@@ -257,8 +257,11 @@ function createMiddlewareBundle(buildOutput: any) {
   esbuildSync({
     entryPoints: [path.join(tempDir, "middleware-adapter.js")],
     outfile: path.join(outputPath, "index.mjs"),
+    external: ["*.node"],
     banner: {
       js: [
+        "import { createRequire as topLevelCreateRequire } from 'module';",
+        "const require = topLevelCreateRequire(import.meta.url);",
         // WORKAROUND: Add `Headers.getAll()` extension to the middleware function — https://github.com/serverless-stack/open-next#workaround-add-headersgetall-extension-to-the-middleware-function
         "class Response extends globalThis.Response {",
         "  constructor(body, init) {",
